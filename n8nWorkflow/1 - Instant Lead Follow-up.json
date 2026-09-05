@@ -1,0 +1,326 @@
+{
+  "name": "1 - Instant Lead Follow-up",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead",
+        "options": {}
+      },
+      "id": "3442d686-eb86-4cea-9698-d869d6aa5c8c",
+      "name": "New Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        384,
+        16
+      ],
+      "webhookId": "new-lead-demo"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appPiFCxNP3vu7N0B",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9MM6mACHvRHEAl",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B/tbl9MM6mACHvRHEAl"
+        },
+        "filterByFormula": "={Email} = '{{$json.body.email}}'",
+        "options": {}
+      },
+      "id": "19c3a18d-5697-487b-9235-57a38eeb5b0d",
+      "name": "Check Existing Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        624,
+        16
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "la9xAVk7AZ191NNd",
+          "name": "Airtable Personal Access Token account 901"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json.id}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "99d41494-6a91-4407-aec4-949379f19e46",
+      "name": "Already Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        864,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appPiFCxNP3vu7N0B",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9MM6mACHvRHEAl",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B/tbl9MM6mACHvRHEAl"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$('New Lead Webhook').item.json.body.name}}",
+            "Email": "={{$('New Lead Webhook').item.json.body.email}}",
+            "Source": "={{$('New Lead Webhook').item.json.body.source || 'Web form'}}",
+            "Status": "New Lead"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Web Form",
+                  "value": "Web Form"
+                },
+                {
+                  "name": "Ad",
+                  "value": "Ad"
+                },
+                {
+                  "name": "Manual",
+                  "value": "Manual"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New Lead",
+                  "value": "New Lead"
+                },
+                {
+                  "name": "Quoted",
+                  "value": "Quoted"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Paid",
+                  "value": "Paid"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Review Sent",
+              "displayName": "Review Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d552facd-ef69-466a-983e-b9b3dec7d32d",
+      "name": "Create Job Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        96
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "la9xAVk7AZ191NNd",
+          "name": "Airtable Personal Access Token account 901"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$('New Lead Webhook').item.json.body.email}}",
+        "subject": "Thanks for reaching out",
+        "message": "Hi {{$('New Lead Webhook').item.json.body.name}},\n\nThanks for your enquiry - we got it and someone will follow up with you shortly.\n\nTalk soon.",
+        "options": {}
+      },
+      "id": "42433934-07e2-43f1-8f91-6217c5567b99",
+      "name": "Send Auto-Reply",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1344,
+        96
+      ],
+      "webhookId": "ca386b96-502d-483d-9466-32b98cb58f06",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAnRaxxecxBtbUsc",
+          "name": "Gmail account 657"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "New Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Already Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already Exists?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create Job Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Job Record": {
+      "main": [
+        [
+          {
+            "node": "Send Auto-Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e4033fa9-fa1a-498d-9fc4-3219b3d6547a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "nodeGroups": [],
+  "id": "rpaMZ5ghuF8eMeNM",
+  "tags": [
+    {
+      "updatedAt": "2026-09-05T09:34:21.255Z",
+      "createdAt": "2026-09-05T09:34:21.255Z",
+      "id": "MHkUc1aFxuiZASdl",
+      "name": "UPWORK"
+    }
+  ]
+}

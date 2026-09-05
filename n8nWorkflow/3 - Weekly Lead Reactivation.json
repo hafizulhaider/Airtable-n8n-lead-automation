@@ -1,0 +1,124 @@
+{
+  "name": "3 - Weekly Lead Reactivation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "72e3f4ae-2eb5-4fcb-ba44-1750230e7a32",
+      "name": "Every Monday 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appPiFCxNP3vu7N0B",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9MM6mACHvRHEAl",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B/tbl9MM6mACHvRHEAl"
+        },
+        "filterByFormula": "=AND(OR({Status} = 'New Lead', {Status} = 'Quoted'), IS_BEFORE({Created At}, DATEADD(TODAY(), -14, 'days')))",
+        "options": {}
+      },
+      "id": "9ece5f40-d2e7-4f19-9b58-217a5890d9ff",
+      "name": "Find Stale Leads",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "la9xAVk7AZ191NNd",
+          "name": "Airtable Personal Access Token account 901"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json.Email}}",
+        "subject": "Still thinking it over?",
+        "message": "Hi {{$json.Name}},\n\nJust checking in - you enquired a little while ago and we haven't heard back. Happy to answer any questions or get your quote moving if you're still interested.\n\nNo pressure either way.",
+        "options": {}
+      },
+      "id": "acd78568-ed3a-41a6-9412-c99f507c538d",
+      "name": "Send Reactivation Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        0
+      ],
+      "webhookId": "57ee78ad-386b-4b80-9d78-6153bc3b2734",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAnRaxxecxBtbUsc",
+          "name": "Gmail account 657"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every Monday 9am": {
+      "main": [
+        [
+          {
+            "node": "Find Stale Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Stale Leads": {
+      "main": [
+        [
+          {
+            "node": "Send Reactivation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "dc278298-1404-4e5e-87b9-ac22a452b439",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "nodeGroups": [],
+  "id": "cw4G4hmfWMBKXsfv",
+  "tags": []
+}

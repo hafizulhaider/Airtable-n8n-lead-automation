@@ -1,0 +1,315 @@
+{
+  "name": "2 - Job Complete Review Request",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json.Status}}",
+              "rightValue": "Paid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{$json['Review Sent']}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "350367ac-bfcc-423e-ae27-daf90725f6c0",
+      "name": "Paid And Not Yet Reviewed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        400,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json.Email}}",
+        "subject": "How did we do?",
+        "message": "Hi {{$json.Name}},\n\nThanks for the business - your job is complete. If you have a minute, a Google review would mean a lot: [REPLACE_WITH_GOOGLE_REVIEW_LINK]\n\nThanks again.",
+        "options": {}
+      },
+      "id": "14cd026e-b637-4d7f-9790-ad4dd4faf70b",
+      "name": "Send Review Request",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        0
+      ],
+      "webhookId": "de489a8e-452d-4ba6-b219-db30e0ab8b5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAnRaxxecxBtbUsc",
+          "name": "Gmail account 657"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appPiFCxNP3vu7N0B",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9MM6mACHvRHEAl",
+          "mode": "list",
+          "cachedResultName": "Jobs",
+          "cachedResultUrl": "https://airtable.com/appPiFCxNP3vu7N0B/tbl9MM6mACHvRHEAl"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{$json.id}}",
+            "Review Sent": true
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Web Form",
+                  "value": "Web Form"
+                },
+                {
+                  "name": "Ad",
+                  "value": "Ad"
+                },
+                {
+                  "name": "Manual",
+                  "value": "Manual"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New Lead",
+                  "value": "New Lead"
+                },
+                {
+                  "name": "Quoted",
+                  "value": "Quoted"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Paid",
+                  "value": "Paid"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Review Sent",
+              "displayName": "Review Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a1bb926e-6c72-4ea5-a965-bcb050ba29fc",
+      "name": "Mark Review Sent",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "la9xAVk7AZ191NNd",
+          "name": "Airtable Personal Access Token account 901"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "appPiFCxNP3vu7N0B",
+          "mode": "id"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "tbl9MM6mACHvRHEAl",
+          "mode": "id"
+        },
+        "triggerField": "fldT0F7HUmFXNVS7X",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        80
+      ],
+      "id": "a333df33-d8bc-49c3-a5ff-9d24bc512bea",
+      "name": "Job Status Changed",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "la9xAVk7AZ191NNd",
+          "name": "Airtable Personal Access Token account 901"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Paid And Not Yet Reviewed": {
+      "main": [
+        [
+          {
+            "node": "Send Review Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Review Request": {
+      "main": [
+        [
+          {
+            "node": "Mark Review Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Status Changed": {
+      "main": [
+        [
+          {
+            "node": "Paid And Not Yet Reviewed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b169d2bb-857d-4bd1-8c01-69b0c5d8ba5c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "nodeGroups": [],
+  "id": "PDi7IwD2WC9KqkFl",
+  "tags": [
+    {
+      "updatedAt": "2026-09-05T09:34:21.255Z",
+      "createdAt": "2026-09-05T09:34:21.255Z",
+      "id": "MHkUc1aFxuiZASdl",
+      "name": "UPWORK"
+    }
+  ]
+}
